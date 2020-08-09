@@ -40,7 +40,7 @@ class AudioClassifier:
             for i, (images, labels) in enumerate(
                     tqdm(train_loader,
                          leave=False,
-                         desc=f"Epoch {epoch} progress: ")):
+                         desc=f"Epoch {epoch + 1} progress: ")):
                 # Run the forward pass
                 images = images.to(device)
                 labels = labels.to(device)
