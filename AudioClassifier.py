@@ -33,6 +33,7 @@ class AudioClassifier:
                                   batch_size=batch_size,
                                   shuffle=shuffle)
         self.__model.to(device)
+        self.__model.train()
         if optimizer is None:
             optimizer = torch.optim.Adam(self.__model.parameters(),
                                          lr=learning_rate)
@@ -71,27 +72,25 @@ class AudioClassifier:
 
     def predict(self, data_df, data_folder,
                 device=torch.device("cpu"),
-                n_splits=2,
                 batch_size=50,
                 shuffle=True,
                 silent=False):
         predictions = []
         self.__model.to(device)
-        for i in trange(n_splits, desc="Splits: ", disable=silent):
-            valid_data = AudioData(data_folder, data_df, 'wav_path')
-            valid_loader = DataLoader(valid_data,
-                                      batch_size=batch_size,
-                                      shuffle=shuffle)
-            self.__model.eval()
-            with torch.no_grad():
-                for images, labels in valid_loader:
-                    images = images.to(device)
-                    outputs = self.__model(images)
-                    _, predicted = torch.max(outputs.data, 1)
-                    predictions.append(predicted.cpu().numpy())
-            del valid_data
-            del valid_loader
-            gc.collect()
+        valid_data = AudioData(data_folder, data_df, 'wav_path', silent=silent)
+        valid_loader = DataLoader(valid_data,
+                                  batch_size=batch_size,
+                                  shuffle=shuffle)
+        self.__model.eval()
+        with torch.no_grad():
+            for images, labels in valid_loader:
+                images = images.to(device)
+                outputs = self.__model(images)
+                _, predicted = torch.max(outputs.data, 1)
+                predictions.append(predicted.cpu().numpy())
+        del valid_data
+        del valid_loader
+        gc.collect()
         predictions = np.hstack(predictions)
         return predictions
 
