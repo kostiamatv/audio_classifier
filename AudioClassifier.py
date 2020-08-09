@@ -60,7 +60,7 @@ class AudioClassifier:
         self.__is_trained = True
         print("Model trained successfully")
         if save_model_to is not None:
-            torch.save(self.__model.state_dict(), save_model_to)
+            torch.save(self.__model, save_model_to)
             print(f"Model saved to {save_model_to}")
         if not keep_data_in_ram:
             del train_data
