@@ -14,7 +14,7 @@ class AudioClassifier:
 
     def __init__(self, use_pretrained=False):
         if use_pretrained:
-            self.__model.load_state_dict(torch.load("./pretrained_model/model"))
+            self.__model = torch.load("./pretrained_model/model")
             self.__is_trained = True
 
     def train(self, data_df, data_folder,
