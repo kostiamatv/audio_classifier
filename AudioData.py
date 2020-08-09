@@ -11,7 +11,7 @@ class AudioData(Dataset):
         self.df = df
         self.data = []
         self.labels = df["target"]
-        for ind in tqdm(range(len(df))):
+        for ind in tqdm(range(len(df)), desc="Processing data: ", leave=False):
             row = df.iloc[ind]
             file_path = os.path.join(base, row[path_col])
             self.data.append(
