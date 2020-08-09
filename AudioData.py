@@ -7,11 +7,13 @@ from tqdm import tqdm
 
 
 class AudioData(Dataset):
-    def __init__(self, base, df, path_col):
+    def __init__(self, base, df, path_col, silent=False):
         self.df = df
         self.data = []
         self.labels = df["target"]
-        for ind in tqdm(range(len(df)), desc="Processing data: ", leave=False):
+        for ind in tqdm(range(len(df)), desc="Processing data: ",
+                        leave=False,
+                        disable=silent):
             row = df.iloc[ind]
             file_path = os.path.join(base, row[path_col])
             self.data.append(

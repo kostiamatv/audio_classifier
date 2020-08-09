@@ -26,8 +26,9 @@ class AudioClassifier:
               criterion=nn.CrossEntropyLoss(),
               optimizer=None,
               save_model_to=None,
-              keep_data_in_ram=False):
-        train_data = AudioData(data_folder, data_df, 'wav_path')
+              keep_data_in_ram=False,
+              silent=False):
+        train_data = AudioData(data_folder, data_df, 'wav_path', silent=silent)
         train_loader = DataLoader(train_data,
                                   batch_size=batch_size,
                                   shuffle=shuffle)
@@ -36,10 +37,11 @@ class AudioClassifier:
             optimizer = torch.optim.Adam(self.__model.parameters(),
                                          lr=learning_rate)
         acc_list = []
-        for epoch in trange(num_epochs, desc=f"Epochs:"):
+        for epoch in trange(num_epochs, desc=f"Epochs:", disable=silent):
             for i, (images, labels) in enumerate(
                     tqdm(train_loader,
                          leave=False,
+                         disable=silent,
                          desc=f"Epoch {epoch + 1} progress: ")):
                 # Run the forward pass
                 images = images.to(device)
@@ -71,9 +73,10 @@ class AudioClassifier:
                 device=torch.device("cpu"),
                 n_splits=2,
                 batch_size=50,
-                shuffle=True):
+                shuffle=True,
+                silent=False):
         predictions = []
-        for i in trange(n_splits, desc="Splits: "):
+        for i in trange(n_splits, desc="Splits: ", disable=silent):
             valid_data = AudioData(data_folder, data_df, 'wav_path')
             valid_loader = DataLoader(valid_data,
                                       batch_size=batch_size,
