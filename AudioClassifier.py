@@ -76,6 +76,7 @@ class AudioClassifier:
                 shuffle=True,
                 silent=False):
         predictions = []
+        self.__model.to(device)
         for i in trange(n_splits, desc="Splits: ", disable=silent):
             valid_data = AudioData(data_folder, data_df, 'wav_path')
             valid_loader = DataLoader(valid_data,
